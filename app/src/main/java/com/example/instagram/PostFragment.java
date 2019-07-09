@@ -14,11 +14,6 @@ import java.io.File;
 
 public class PostFragment extends Fragment {
 
-    public final String APP_TAG = "Instagram";
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
-    File photoFile;
-
     FragmentActivity listener;
 
     // This event fires 1st, before creation of fragment or any views

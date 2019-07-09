@@ -23,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
         // define your fragments here
         final Fragment profileFragment = new ProfileFragment();
         final Fragment feedFragment = new FeedFragment();
-        final Fragment postFragment = new PostFragment();
+   //     final Fragment postFragment = new PostFragment();
 
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -36,8 +36,9 @@ public class HomeActivity extends AppCompatActivity {
                                 fragment = feedFragment;
                                 break;
                             case R.id.action_post:
-                                fragment = postFragment;
-                                break;
+                                Intent intent = new Intent(HomeActivity.this, CameraActivity.class);
+                                HomeActivity.this.startActivity(intent);
+                                return true;
                             case R.id.action_profile:
                             default:
                                 fragment = profileFragment;
