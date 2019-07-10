@@ -13,7 +13,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.parse.ProgressCallback;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 
 import java.io.File;
 
@@ -23,6 +33,8 @@ public class CameraActivity extends AppCompatActivity {
     public String photoFileName = "photo.jpg";
     File photoFile;
     Button btnCapture;
+    TextView etCaption;
+    Button btnPost;
 
     public void onLaunchCamera() {
         // create Intent to take a picture and return control to the calling application
@@ -66,7 +78,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        btnCapture = (Button) findViewById(R.id.btnCapture);
+        btnCapture = (Button) findViewById(R.id.btnPost);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,12 +91,33 @@ public class CameraActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                setContentView(R.layout.post_photo);
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                ImageView ivPreview = (ImageView) findViewById(R.id.ivPreview);
+                ImageView ivPreview = (ImageView) findViewById(R.id.ivMyPhoto);
                 ivPreview.setImageBitmap(takenImage);
+                btnCapture = (Button) findViewById(R.id.btnPost);
+                etCaption = (TextView) findViewById(R.id.etCaption);
+                ParseFile file = new ParseFile(photoFile);
+                file.saveInBackground(new SaveCallback() {
+                    public void done(ParseException e) {
+                        if(e==null) {
+                            Log.d("CameraActivity", "post successful");
+                            final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Log.e("CameraActivity", "post unsuccessful");
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                ParseObject myPost = new ParseObject("Post");
+                myPost.put("username", ParseUser.getCurrentUser().getUsername());
+                myPost.put("photoFile", file);
+                myPost.saveInBackground();
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
