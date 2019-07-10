@@ -1,17 +1,33 @@
-package com.example.instagram;
+package com.example.instagram.fragments;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.instagram.InstagramAdapter;
+import com.example.instagram.R;
+import com.example.instagram.models.Post;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class FeedFragment extends Fragment {
    // ThingsAdapter adapter;
     FragmentActivity listener;
+    private RecyclerView rvFeed;
+    private InstagramAdapter adapter;
+    private List<Post> mPosts;
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
@@ -45,9 +61,37 @@ public class FeedFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        mPosts = new ArrayList<>();
         super.onViewCreated(view, savedInstanceState);
-      //  ListView lv = (ListView) view.findViewById(R.id.lvSome);
-      //  lv.setAdapter(adapter);
+        rvFeed = view.findViewById(R.id.rvFeed);
+        //create adapter
+        adapter = new InstagramAdapter(getContext(), mPosts);
+        //create data source
+        //set adapter on rv
+        rvFeed.setAdapter(adapter);
+        //set layout manager on rv
+        rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        queryPosts();
+    }
+
+    private void queryPosts() {
+        ParseQuery<Post> postQuery = new ParseQuery<>(Post.class);
+        postQuery.include(Post.KEY_USER);
+        postQuery.setLimit(20).orderByDescending("createdAt");
+        postQuery.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.e("FeedFrag", "Error with query");
+                    e.printStackTrace();
+                    return;
+                }
+                mPosts.addAll(posts);
+                adapter.notifyDataSetChanged();
+                rvFeed.scrollToPosition(0);
+            }
+        });
+
     }
 
     // This method is called when the fragment is no longer connected to the Activity

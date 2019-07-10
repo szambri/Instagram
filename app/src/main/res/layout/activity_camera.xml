@@ -21,7 +21,7 @@
         app:srcCompat="@drawable/icon" />
 
     <Button
-        android:id="@+id/btnPost"
+        android:id="@+id/btnTake"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
@@ -29,7 +29,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="150dp"
         android:layout_marginRight="150dp"
-        android:text="Take Photo"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivMyPhoto" />

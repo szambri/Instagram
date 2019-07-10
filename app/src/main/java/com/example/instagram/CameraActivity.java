@@ -16,14 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.Parse;
+import com.example.instagram.models.Post;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 
 import java.io.File;
 
@@ -74,11 +71,35 @@ public class CameraActivity extends AppCompatActivity {
         return file;
     }
 
+    private void savePost(String caption, ParseUser user, File photoFile)
+    {
+        Post myPost = new Post();
+        myPost.setUser(user);
+        myPost.setImage(new ParseFile(photoFile));
+        myPost.setCaption(caption);
+        myPost.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e==null) {
+                    Log.d("CameraActivity", "post successful");
+                    final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.d("CameraActivity", "post unsuccessful");
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        btnCapture = (Button) findViewById(R.id.btnPost);
+        btnCapture = (Button) findViewById(R.id.btnTake);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,29 +119,35 @@ public class CameraActivity extends AppCompatActivity {
                 // Load the taken image into a preview
                 ImageView ivPreview = (ImageView) findViewById(R.id.ivMyPhoto);
                 ivPreview.setImageBitmap(takenImage);
-                btnCapture = (Button) findViewById(R.id.btnPost);
+                btnPost = (Button) findViewById(R.id.btnPost);
                 etCaption = (TextView) findViewById(R.id.etCaption);
                 ParseFile file = new ParseFile(photoFile);
-                file.saveInBackground(new SaveCallback() {
-                    public void done(ParseException e) {
-                        if(e==null) {
-                            Log.d("CameraActivity", "post successful");
-                            final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Log.e("CameraActivity", "post unsuccessful");
-                            e.printStackTrace();
-                        }
+                btnPost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        savePost(etCaption.getText().toString(), ParseUser.getCurrentUser(), photoFile);
+                        final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
-                ParseObject myPost = new ParseObject("Post");
-                myPost.put("username", ParseUser.getCurrentUser().getUsername());
-                myPost.put("photoFile", file);
-                myPost.saveInBackground();
+//                file.saveInBackground(new SaveCallback() {
+//                    public void done(ParseException e) {
+//                        if(e==null) {
+//                            Log.d("CameraActivity", "post successful");
+//                            final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        } else {
+//                            Log.e("CameraActivity", "post unsuccessful");
+//                            e.printStackTrace();
+//                        }
+////                    }
+//                });
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 }

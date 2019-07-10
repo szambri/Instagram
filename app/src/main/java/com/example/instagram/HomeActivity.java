@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.instagram.fragments.FeedFragment;
+import com.example.instagram.fragments.ProfileFragment;
+
 public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
