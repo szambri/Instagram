@@ -12,9 +12,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,7 +32,6 @@ import com.example.instagram.MainActivity;
 import com.example.instagram.R;
 import com.example.instagram.models.Post;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -51,7 +48,6 @@ public class ProfileFragment extends Fragment {
     private RecyclerView rvGrid;
     private InstagramAdapter adapter;
     private List<Post> mPosts;
-    private SwipeRefreshLayout swipeContainer;
     private Button btnEdit;
     private Button btnLogout;
     private ImageView ivProfilePic;
@@ -76,7 +72,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
         // Lookup the swipe container view
 
     }

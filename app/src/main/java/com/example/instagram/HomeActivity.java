@@ -26,7 +26,6 @@ public class HomeActivity extends AppCompatActivity {
         // define your fragments here
         final Fragment profileFragment = new ProfileFragment();
         final Fragment feedFragment = new FeedFragment();
-   //     final Fragment postFragment = new PostFragment();
 
         // handle navigation selection
         bottomNavigationView.setOnNavigationItemSelectedListener(

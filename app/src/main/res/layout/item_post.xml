@@ -57,7 +57,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/ivProfilePic"
-        app:layout_constraintTop_toBottomOf="@+id/ivLike" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLikes" />
 
     <TextView
         android:id="@+id/tvCaption"
@@ -113,4 +113,15 @@
         app:layout_constraintStart_toEndOf="@+id/ivComment"
         app:layout_constraintTop_toBottomOf="@+id/ivPhoto"
         app:srcCompat="@drawable/direct" />
+
+    <TextView
+        android:id="@+id/tvLikes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/ivPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/ivLike" />
 </android.support.constraint.ConstraintLayout>

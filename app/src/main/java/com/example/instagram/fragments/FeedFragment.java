@@ -30,7 +30,7 @@ import java.util.List;
 
 public class FeedFragment extends Fragment {
    // ThingsAdapter adapter;
-    FragmentActivity listener;
+    private FragmentActivity listener;
     private RecyclerView rvFeed;
     private InstagramAdapter adapter;
     private List<Post> mPosts;
@@ -54,12 +54,8 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_main);
-        // Lookup the swipe container view
 
     }
-
-
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override

@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordInput;
     private Button loginBtn;
     private Button signinBtn;
-    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

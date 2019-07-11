@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
+import com.parse.SaveCallback;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,14 +21,14 @@ import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
-    Post post;
-    TextView tvUsername;
-    TextView tvUserCap;
-    TextView tvCaption;
-    ImageView ivPhoto;
-    ImageView ivProfilePic;
-    TextView tvDate;
-    ImageView ivLike;
+    private Post post;
+    private TextView tvUsername;
+    private TextView tvUserCap;
+    private TextView tvCaption;
+    private ImageView ivPhoto;
+    private ImageView ivProfilePic;
+    private TextView tvDate;
+    private ImageView ivLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +48,18 @@ public class DetailActivity extends AppCompatActivity {
         tvCaption.setText(post.getCaption());
         tvUserCap.setText(post.getUser().getUsername());
         tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
-        if(post.getLiked()) {
-            ivLike.setActivated(true);
-        }
+        ivLike.setActivated(post.getLiked());
         ivLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 v.setActivated(!v.isActivated());
-                post.put("liked", !v.isActivated());
+                post.setLiked(v.isActivated());
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(com.parse.ParseException e) {
+                    }
+                });
+
             }
         });
         ParseFile image = post.getImage();

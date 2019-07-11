@@ -2,7 +2,6 @@ package com.example.instagram;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -14,18 +13,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
 
-import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -77,6 +73,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private ImageView ivProfilePic;
         private TextView tvDate;
         private ImageView ivLike;
+        private TextView tvLikes;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -88,6 +85,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
                 ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
                 ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
                 tvDate = itemView.findViewById(R.id.tvDate);
+                tvLikes = itemView.findViewById(R.id.tvLikes);
                 ivLike = itemView.findViewById(R.id.ivLike);
                 ivLike.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -103,21 +101,36 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
             }
         }
 
-        public void bind(Post post) {
+        public void bind(final Post post) {
             if(!isGrid)
             {
                 tvUserCap.setText(post.getUser().getUsername());
                 tvUsername.setText(post.getUser().getUsername());
                 tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
-                if(ivLike.isActivated()) {
-                    post.setLiked(true);
-                    post.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(com.parse.ParseException e) {
-
+                tvLikes.setText(post.getLikes().intValue()+" likes");
+                ivLike.setActivated(post.getLiked());
+                ivLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int likes = post.getLikes().intValue();
+                        v.setActivated(!v.isActivated());
+                        post.setLiked(ivLike.isActivated());
+                        if(v.isActivated()){
+                           likes++;
+                           post.setLikes(likes);
+                        } else {
+                            likes--;
+                            post.setLikes(likes);
                         }
-                    });
-                }
+                        post.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(com.parse.ParseException e) {
+
+                            }
+                        });
+                        tvLikes.setText(post.getLikes().intValue()+" likes");
+                    }
+                });
                 ParseFile image = post.getImage();
                 ParseFile prof = post.getUser().getParseFile("profilePic");
                 if (prof!=null) {
