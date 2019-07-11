@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
@@ -77,6 +79,19 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
             tvUserCap.setText(post.getUser().getUsername());
             tvUsername.setText(post.getUser().getUsername());
             ParseFile image = post.getImage();
+            ParseFile prof = post.getUser().getParseFile("profilePic");
+            if (prof!=null) {
+                Glide.with(context)
+                        .load(prof.getUrl())
+                        .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                        .into(ivProfilePic);
+            }
+            else{
+                Glide.with(context)
+                        .load(R.drawable.instagram_user_filled_24)
+                        .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                        .into(ivProfilePic);
+            }
             if (image!=null) {
                 Glide.with(context)
                         .load(image.getUrl())

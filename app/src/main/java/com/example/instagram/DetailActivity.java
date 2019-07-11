@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
@@ -43,6 +45,19 @@ public class DetailActivity extends AppCompatActivity {
         tvUserCap.setText(post.getUser().getUsername());
         tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
         ParseFile image = post.getImage();
+        ParseFile prof = post.getUser().getParseFile("profilePic");
+        if (prof!=null) {
+            Glide.with(this)
+                    .load(prof.getUrl())
+                    .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                    .into(ivProfilePic);
+        }
+        else{
+            Glide.with(this)
+                    .load(R.drawable.instagram_user_filled_24)
+                    .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                    .into(ivProfilePic);
+        }
         Glide.with(this)
                 .load(image.getUrl())
                 .apply(new RequestOptions().override(300, 300))
