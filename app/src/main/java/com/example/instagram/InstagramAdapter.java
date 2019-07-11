@@ -74,6 +74,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private ImageView ivPhoto;
         private ImageView ivMyPhoto;
         private ImageView ivProfilePic;
+        private TextView tvDate;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -84,6 +85,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
                 ivPhoto = itemView.findViewById(R.id.ivPhoto);
                 ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
                 ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
+                tvDate = itemView.findViewById(R.id.tvDate);
                 itemView.setOnClickListener(this);
             }
             else {
@@ -97,6 +99,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
             {
                 tvUserCap.setText(post.getUser().getUsername());
                 tvUsername.setText(post.getUser().getUsername());
+                tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
                 ParseFile image = post.getImage();
                 ParseFile prof = post.getUser().getParseFile("profilePic");
                 if (prof!=null) {
@@ -147,6 +150,23 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
     public void clear() {
         posts.clear();
         notifyDataSetChanged();
+    }
+    public String getRelativeTimeAgo(String myDate) {
+
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(myDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_TIME).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
     }
 
 
