@@ -95,7 +95,7 @@ public class FeedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvFeed = view.findViewById(R.id.rvFeed);
         //create adapter
-        adapter = new InstagramAdapter(getContext(), mPosts);
+        adapter = new InstagramAdapter(getContext(), mPosts, false);
         //create data source
         //set adapter on rv
         rvFeed.setAdapter(adapter);

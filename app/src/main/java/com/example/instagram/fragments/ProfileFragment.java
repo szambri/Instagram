@@ -13,6 +13,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.example.instagram.MainActivity;
 import com.example.instagram.R;
 import com.example.instagram.models.Post;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -45,7 +48,7 @@ import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
-    private RecyclerView rvFeed;
+    private RecyclerView rvGrid;
     private InstagramAdapter adapter;
     private List<Post> mPosts;
     private SwipeRefreshLayout swipeContainer;
@@ -126,32 +129,33 @@ public class ProfileFragment extends Fragment {
         });
         mPosts = new ArrayList<>();
         super.onViewCreated(view, savedInstanceState);
-        rvFeed = view.findViewById(R.id.rvFeed);
+        rvGrid = view.findViewById(R.id.rvGrid);
         //create adapter
-        adapter = new InstagramAdapter(getContext(), mPosts);
+        adapter = new InstagramAdapter(getContext(), mPosts, true);
         //create data source
         //set adapter on rv
-//        rvFeed.setAdapter(adapter);
+        rvGrid.setAdapter(adapter);
         //set layout manager on rv
-//        rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
-//        queryPosts();
+        rvGrid.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        queryPosts();
     }
 
     private void queryPosts() {
         ParseQuery<Post> postQuery = new ParseQuery<>(Post.class);
         postQuery.include(Post.KEY_USER);
         postQuery.setLimit(20).orderByDescending("createdAt");
+        postQuery.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
         postQuery.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> posts, ParseException e) {
                 if (e != null) {
-                    Log.e("FeedFrag", "Error with query");
+                    Log.e("ProfFrag", "Error with query");
                     e.printStackTrace();
                     return;
                 }
                 mPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
-                rvFeed.scrollToPosition(0);
+                rvGrid.scrollToPosition(0);
             }
         });
 

@@ -2,6 +2,7 @@ package com.example.instagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -31,17 +32,26 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
 
     private Context context;
     private List<Post> posts;
+    private boolean isGrid;
 
-    public InstagramAdapter(Context context, List<Post> posts) {
+    public InstagramAdapter(Context context, List<Post> posts, boolean isGrid) {
         this.context = context;
         this.posts = posts;
+        this.isGrid = isGrid;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
-        return new ViewHolder(view);
+        if(isGrid) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_grid, parent, false);
+            return new ViewHolder(view);
+        }
+        else {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
+            return new ViewHolder(view);
+        }
+
     }
 
     @Override
@@ -62,43 +72,63 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private TextView tvUserCap;
         private TextView tvCaption;
         private ImageView ivPhoto;
+        private ImageView ivMyPhoto;
         private ImageView ivProfilePic;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvUsername = itemView.findViewById(R.id.tvUsername);
-            tvCaption = itemView.findViewById(R.id.tvCaption);
-            tvUserCap = itemView.findViewById(R.id.tvUserCap);
-            ivPhoto = itemView.findViewById(R.id.ivPhoto);
-            ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
-            itemView.setOnClickListener(this);
+            if(!isGrid) {
+                tvUsername = itemView.findViewById(R.id.tvUsername);
+                tvCaption = itemView.findViewById(R.id.tvCaption);
+                tvUserCap = itemView.findViewById(R.id.tvUserCap);
+                ivPhoto = itemView.findViewById(R.id.ivPhoto);
+                ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
+                ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
+                itemView.setOnClickListener(this);
+            }
+            else {
+                ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
+                itemView.setOnClickListener(this);
+            }
         }
 
         public void bind(Post post) {
+            if(!isGrid)
+            {
+                tvUserCap.setText(post.getUser().getUsername());
+                tvUsername.setText(post.getUser().getUsername());
+                ParseFile image = post.getImage();
+                ParseFile prof = post.getUser().getParseFile("profilePic");
+                if (prof!=null) {
+                    Glide.with(context)
+                            .load(prof.getUrl())
+                            .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                            .into(ivProfilePic);
+                }
+                else{
+                    Glide.with(context)
+                            .load(R.drawable.instagram_user_filled_24)
+                            .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
+                            .into(ivProfilePic);
+                }
+                if (image!=null) {
+                    Glide.with(context)
+                            .load(image.getUrl())
+                            .apply(new RequestOptions().override(300, 300))
+                            .into(ivPhoto);
+                }
+                tvCaption.setText(post.getCaption());
+            } else {
+                ParseFile image = post.getImage();
+                if (image!=null) {
+                    Glide.with(context)
+                            .load(image.getUrl())
+                            .apply(new RequestOptions().override(300, 300))
+                            .into(ivMyPhoto);
+                }
+            }
             //TODO
-            tvUserCap.setText(post.getUser().getUsername());
-            tvUsername.setText(post.getUser().getUsername());
-            ParseFile image = post.getImage();
-            ParseFile prof = post.getUser().getParseFile("profilePic");
-            if (prof!=null) {
-                Glide.with(context)
-                        .load(prof.getUrl())
-                        .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
-                        .into(ivProfilePic);
-            }
-            else{
-                Glide.with(context)
-                        .load(R.drawable.instagram_user_filled_24)
-                        .apply(new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(100)))
-                        .into(ivProfilePic);
-            }
-            if (image!=null) {
-                Glide.with(context)
-                        .load(image.getUrl())
-                        .apply(new RequestOptions().override(300, 300))
-                        .into(ivPhoto);
-            }
-            tvCaption.setText(post.getCaption());
+
         }
         @Override
         public void onClick(View v) {
