@@ -1,8 +1,10 @@
 package com.example.instagram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
 
+import org.parceler.Parcels;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.ViewHolder>{
 
@@ -44,7 +54,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         return posts.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView tvUsername;
         private TextView tvUserCap;
@@ -52,13 +62,14 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private ImageView ivPhoto;
         private ImageView ivProfilePic;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvUserCap = itemView.findViewById(R.id.tvUserCap);
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
             ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Post post) {
@@ -69,12 +80,29 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
             if (image!=null) {
                 Glide.with(context)
                         .load(image.getUrl())
+                        .apply(new RequestOptions().override(300, 300))
                         .into(ivPhoto);
             }
             tvCaption.setText(post.getCaption());
+        }
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Post post = posts.get(position);
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("post", post);
+                context.startActivity(intent);
+            }
 
         }
 
     }
+
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+    }
+
 
 }

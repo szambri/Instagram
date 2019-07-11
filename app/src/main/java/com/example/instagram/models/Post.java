@@ -5,8 +5,11 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+
 @ParseClassName("Post")
 public class Post extends ParseObject {
+
+    public Post() {}
 
     public static final String KEY_CAPTION ="caption";
     public static final String KEY_IMAGE ="photoFile";

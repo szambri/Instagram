@@ -70,6 +70,27 @@ public class CameraActivity extends AppCompatActivity {
 
         return file;
     }
+    public static class BitmapScaler
+    {
+        // Scale and maintain aspect ratio given a desired width
+        // BitmapScaler.scaleToFitWidth(bitmap, 100);
+        public static Bitmap scaleToFitWidth(Bitmap b, int width)
+        {
+            float factor = width / (float) b.getWidth();
+            return Bitmap.createScaledBitmap(b, width, (int) (b.getHeight() * factor), true);
+        }
+
+
+        // Scale and maintain aspect ratio given a desired height
+        // BitmapScaler.scaleToFitHeight(bitmap, 100);
+        public static Bitmap scaleToFitHeight(Bitmap b, int height)
+        {
+            float factor = height / (float) b.getHeight();
+            return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factor), height, true);
+        }
+
+        // ...
+    }
 
     private void savePost(String caption, ParseUser user, File photoFile)
     {
@@ -116,6 +137,7 @@ public class CameraActivity extends AppCompatActivity {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
+                Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenImage, 100);
                 // Load the taken image into a preview
                 ImageView ivPreview = (ImageView) findViewById(R.id.ivMyPhoto);
                 ivPreview.setImageBitmap(takenImage);
@@ -131,19 +153,6 @@ public class CameraActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-//                file.saveInBackground(new SaveCallback() {
-//                    public void done(ParseException e) {
-//                        if(e==null) {
-//                            Log.d("CameraActivity", "post successful");
-//                            final Intent intent = new Intent(CameraActivity.this, HomeActivity.class);
-//                            startActivity(intent);
-//                            finish();
-//                        } else {
-//                            Log.e("CameraActivity", "post unsuccessful");
-//                            e.printStackTrace();
-//                        }
-////                    }
-//                });
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
