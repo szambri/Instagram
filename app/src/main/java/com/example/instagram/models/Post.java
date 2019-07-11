@@ -14,6 +14,7 @@ public class Post extends ParseObject {
     public static final String KEY_CAPTION ="caption";
     public static final String KEY_IMAGE ="photoFile";
     public static final String KEY_USER ="user";
+    public static final String KEY_LIKED = "liked";
 
     public String getCaption() {
         return getString(KEY_CAPTION);
@@ -37,6 +38,14 @@ public class Post extends ParseObject {
 
     public void setUser(ParseUser parseUser) {
         put(KEY_USER, parseUser);
+    }
+
+    public boolean getLiked() {
+        return getBoolean(KEY_LIKED);
+    }
+
+    public void setLiked(boolean liked) {
+        put(KEY_LIKED, liked);
     }
 
 }

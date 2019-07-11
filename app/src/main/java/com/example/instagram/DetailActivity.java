@@ -3,6 +3,7 @@ package com.example.instagram;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class DetailActivity extends AppCompatActivity {
     ImageView ivPhoto;
     ImageView ivProfilePic;
     TextView tvDate;
+    ImageView ivLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class DetailActivity extends AppCompatActivity {
         ivPhoto = findViewById(R.id.ivPhoto);
         tvDate = findViewById(R.id.tvDate);
         ivProfilePic = findViewById(R.id.ivProfilePic);
+        ivLike = findViewById(R.id.ivLike);
 
         post = (Post) getIntent().getExtras().get("post");
 
@@ -44,6 +47,16 @@ public class DetailActivity extends AppCompatActivity {
         tvCaption.setText(post.getCaption());
         tvUserCap.setText(post.getUser().getUsername());
         tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
+        if(post.getLiked()) {
+            ivLike.setActivated(true);
+        }
+        ivLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setActivated(!v.isActivated());
+                post.put("liked", !v.isActivated());
+            }
+        });
         ParseFile image = post.getImage();
         ParseFile prof = post.getUser().getParseFile("profilePic");
         if (prof!=null) {

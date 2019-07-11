@@ -19,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -75,6 +76,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private ImageView ivMyPhoto;
         private ImageView ivProfilePic;
         private TextView tvDate;
+        private ImageView ivLike;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -86,7 +88,14 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
                 ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
                 ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
                 tvDate = itemView.findViewById(R.id.tvDate);
-                itemView.setOnClickListener(this);
+                ivLike = itemView.findViewById(R.id.ivLike);
+                ivLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setActivated(!v.isActivated());
+                    }
+                });
+                ivPhoto.setOnClickListener(this);
             }
             else {
                 ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
@@ -100,6 +109,15 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
                 tvUserCap.setText(post.getUser().getUsername());
                 tvUsername.setText(post.getUser().getUsername());
                 tvDate.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
+                if(ivLike.isActivated()) {
+                    post.setLiked(true);
+                    post.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(com.parse.ParseException e) {
+
+                        }
+                    });
+                }
                 ParseFile image = post.getImage();
                 ParseFile prof = post.getUser().getParseFile("profilePic");
                 if (prof!=null) {
