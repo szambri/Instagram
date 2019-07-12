@@ -20,6 +20,8 @@ import com.parse.ParseFile;
 import com.parse.SaveCallback;
 
 
+import org.parceler.Parcels;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -74,6 +76,7 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
         private TextView tvDate;
         private ImageView ivLike;
         private TextView tvLikes;
+        private ImageView ivComment;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -85,8 +88,19 @@ public class InstagramAdapter extends RecyclerView.Adapter<InstagramAdapter.View
                 ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
                 ivMyPhoto = itemView.findViewById(R.id.ivMyPhoto);
                 tvDate = itemView.findViewById(R.id.tvDate);
+                ivComment = itemView.findViewById(R.id.ivComment);
                 tvLikes = itemView.findViewById(R.id.tvLikes);
                 ivLike = itemView.findViewById(R.id.ivLike);
+                ivComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = getAdapterPosition();
+                        Post post = posts.get(position);
+                        Intent intent = new Intent(context, CommentActivity.class);
+                        intent.putExtra("post", post);
+                        context.startActivity(intent);
+                    }
+                });
                 ivLike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
