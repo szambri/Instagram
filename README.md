@@ -38,7 +38,8 @@ The following **additional** features are implemented:
 
 - [x] Grid layout on profile page
 - [x] Option to edit profile picture to a new photo
-- [x] Can like and unlike
+- [x] Can like and unlike, both are persisted
+- [x] Rounded edges on profile photos
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
@@ -49,7 +50,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/szambri/Instagram/blob/master/GIFInstagram.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
